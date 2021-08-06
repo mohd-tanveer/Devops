@@ -1,0 +1,72 @@
+#junit5
+steps
+Design 
+write code
+write tests
+the point of writing an automated tests not so much to verify that the code works now.
+
+the point is to verify on an ongoing basis that the code continues to work in the future.
+
+#why use a testing framework 
+				test runs
+.preparation + 
+.provide test inputs +
+.run the test
+.provide expected output +
+.Verify result
+.Do something to alert developer if test failed
+
+.Junit4 is > 10 years old
+.not up to date with newer testing patterns
+.not up to date with java language features
+.monolithic architecture
+.Bugs and feature request pipled up.
+
+Junit5
+junit5 != junit4 + 1
+JUnit 5 = JUnit Platform + JUnit Jupiter + JUnit Vintage(to support previous)
+
+AssertMethods
+https://junit.org/junit5/docs/5.0.1/api/org/junit/jupiter/api/Assertions.html
+
+#test driven Development methodolgy
+
+write the test first and then actual code 
+example
+computeCricleArea
+
+
+##Test LifeCycle hooks
+@BeforeAll
+@AfterAll
+@BeforeEach
+@AfterEach
+
+19th lect
+Using DisplayName and Disabled annotations
+@DisplayName
+@Disabled
+
+Conditional execution an asumption
+@EnabledOnOs(OS.lINUX)
+@EnabledOnJre(JRE.JAVA_11)
+@EnabledIf
+@EnabledIFSystemProperty
+@EnabledIfEnvironmentVariable
+
+//Asummption
+assumeTrue(pass boolean value
+
+//using AssertALl()
+
+//lazy Message(using supplier for alert messages)
+  pass lambda with the message
+  
+//RepeatedTest
+it takes an argument will run the test that many times
+
+//Tagging test @Tag
+
+//Using TestInfo and TestReporter
+TestInfor contains info about test and will be used when you want to know about
+TestReporter it is used to report test
