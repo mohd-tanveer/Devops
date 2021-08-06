@@ -1,0 +1,215 @@
+#Docker Installation
+https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
+#Docker Commands
+
+	1.	docker run nginx
+	
+The docker run command is used to run a container from an image
+If it already exists if the image is not present on the host it will go out to docker hub and pull that image down. 
+But this is only done the first time for the subsequent executions. The same image will be reused
+
+ 
+2.	Docker ps
+	docker ps -a
+
+command lists all running containers and some basic information about them such as the container 
+I.D. the name of the image we used to run the containers.
+The current status and the name of the container.
+
+3. list of images : 	the docker images command to see a list of available images and their sizes on our host.
+
+	docker images
+	
+4. remove the image 
+docker rmi nginx
+
+Run the docker rmi command.Remember you must ensure that no containers are running off of that image before attempting to remove 
+the image. You must stop and delete all dependent containers to be able to delete an image.
+
+5. Docker pull
+	docker pull command will only pull the images not run them
+	
+6. Docker sleep command: If the image isn't running any service as is the case with Ubuntu you could instruct Docker to run a
+process with the docker run command for example a sleep command with a duration of five seconds.
+When the container starts it runs to sleep command and goes into sleep for five seconds close to it.
+The sleep command exits and the container stops what we just saw was a executing a command.
+
+
+	docker run ubantu u sleep 5
+	
+7. docker exec command:  let's say I would like to see the contents of a file inside this particular container. 
+I could use the docker exec command to execute a command on my docker container.
+In this case to print the contents of the /etc/hosts file.
+
+docker exec distraced_mtlintock cat /etc/hosts
+
+8. docker attach Container_id
+
+9. To go inside the docker container run 
+	docker run -it container_name(sentos) bash
+	
+10. docker rm container_id/container_name
+	this will remove it from history of (docker ps -a) or it can be used to clean disk space
+	docker rm is used to remove containers
+	docker rmi is used to remove images 
+
+
+
+#Lecture11
+
+11. tag(to use specific version of image say latest)
+docker run redis:4.0/latest
+
+12.	for the interactive mode, run the container and conects me on that container
+docker run -it image_name
+
+13. Port mapping: the application which is running on port 5000 will be mapped with port 80 and we can use the application from the port 80
+		docker run -p 80:5000 kodecloud/simplewebapp
+				
+		this way you can run multiple instances of your application and map them to different ports
+		on the docker host or on instances of different applications on different ports for example in this
+		case I am running an instance of mysql that runs a database on my and listens on the default
+		mysql port 3306 or another instance of mysql on another port 8306.
+		So you can run as many applications like this and map them to as many ports as you want.
+		And of course you cannot map to the same port on the dockor host more than once.
+
+14. Run Volume Mapping
+	docker run -v /opt/datadir: /var/lib/mysql mysql
+	
+	
+  If you would like to persist data you would want to map a directory outside the container on the Docker host to a directory inside the container.
+ 	In this case I create a directory called /opt/datadir and map that to /var/lib/mysql inside the docker container using the –v option and specifying the directory on the docker
+ host followed by a colon and the directory inside the docker container. This way when docker container
+ runs it will implicitly mount the external directory to a folder inside the docker container.
+ This way all your data will now be stored in the external volume at /opt/data directory
+ 
+15. inspect commmadn: to see the detail information about the image run 
+	docker inspect image_name
+	
+16.  logs 
+	dcoker logs contianer_name
+	
+	
+	
+	
+#how to create an image ?
+	before that why we want to containrinzing may be beacuse we want to dockerize the application or other reasons
+
+creating your own image. First, create a Docker file named Docker File and write down the instructions for setting up your application
+in it, such as installing dependencies where to copy the source code from and to, and what the entry point of the application is, etc..
+Once done, build your image using the docker, build command and specify the Docker file as input as
+well as the tag name for the image. This will create an image locally on your system to make it available on the public Docker Hub Registry.
+Run the Docker Push Command and specify the name of the image you just created.
+
+example	:	
+	dockerfile
+		FROM p04058riskrating.azurecr.io/ing-rhel8-openjdk11:latest
+		USER root
+		ARG JAR_FILE=web/target/*.jar
+		COPY ${JAR_FILE} app.jar
+		ENTRYPOINT ["java","-Dspring.profiles.active=st","-Duser.timezone=CET","-jar","/app.jar"]
+		
+left side is known as instruction right side is known commmands for example run yum install python
+	
+		
+#docker build command:dcoker is build in layered architecture in case if it fails at somepoint it will start from the failed point and avoids running entire thing again
+		docker build . -f dockerfile -t location/web-app 
+		
+
+#Lecture 20 continue....
+
+#Docker environment variable
+	docker run -e app_colour=pink container_name
+	
+	to inspect the enviornement variables on contianer name use inspect command 
+	
+	
+#Command Vs EntryPoint
+let's say we have a image as ubuntu sleeper and it contains
+	from UBUNTU
+	CMD sleep 5
+now we build a image wtih this command : docker buid -t ubuntu-sleeper .
+
+now we can run the image directly , and program will sleep for 5 seconds , but incase you want to increase the sleep time with 10 seconds
+then you have to specify with the timing , the commmand will be something like this.
+
+docker run ubuntu-sleeper sleep 10 instead of this command we would like to give docker run ubuntu-sleeper 10
+
+but we dont want to define explicilty the sleep command ,
+We only want to pass in the number of seconds the container should sleep and sleep command should be
+invoked automatically and that is where the entry point instructions comes into play.
+
+from ubunut
+
+entrypoint["sleep"]
+
+cmd["5"]
+
+
+
+#docker-compose up
+combine all the application in one yaml with all the configuration say link between application and then run docker-compose up command 
+
+
+
+#docker registry :
+	repository of all the images or we can say the cloud for the docker images 
+	
+#docker engine 
+When you install Docker on a linux host you're actually installing three different competence.
+The Docker demon The REST API server and the docker CLI the docker demon is a background process that
+manages Docker objects such as the images containers volumes and networks.
+The Docker arrest API server is the API interface that programs can use to talk to the demon and provide
+instructions.
+
+docker run --cpus=.5 ubuntu
+docker run --memory=100 ubuntu
+
+the above command is used to assign the memory or cpu limit 
+
+
+docker exec containerID ps -eaf : this command will list out the all the process inside the container 
+
+
+
+##Docker storage 
+how thee files realted to docker storage is stored  at this location 
+/var/lib/docker : inside this images, container, volumes will be stored at respective folder
+
+docker volume create data_volume :- to create the docker volume 
+docker run -v data_volume : /var/lib/mysql mysql :- if the volume is not created the docker will create it mount it to the application.
+docker run -v /data/mysql : /var/lib/mysql mysql :- bind mount:  bind mount mounts a directory from any location on the docker host.
+
+-v method is old , new method is mount 
+and mount one more verbal 
+for example :       docker run \
+											--mount type=bind, source=/data/mysql,target=/var/lib/mysql mysql   
+
+  
+So Dockery uses storage drivers to enable layered architecture.
+Some of the common storage drivers are AUFS, BTRFS, ZFS, device-mapper, overlay and overlay 2
+the selection of the storage driver.
+Depends on the underlying OS being used for example with Ubuntu.
+The default storage driver is a ufs whereas this store as driver is not available on other
+operating systems like fedora or cent OS.
+
+
+docker system df :-> this command will show the size of the image
+
+
+##docker network:
+When you install Docker it creates three networks automatically bridge none
+And host bridge is the default network a container gets attached to.
+If you would like to associate the container with any other network you specify the network information
+using the network command line parameter like this.
+
+
+##docker swarm and kubernetes 
+both are orchestration tool which is used to deployment your application for production environment 
+What does container orchestration does?
+it will automatically scale us scale down based on the load. (by using replicas)
+
+docker swarm:  you could now combine multiple Docker machines together into a single cluster Docker swarm.
+We'll take care of distributing your services or your application instances into separate hosts for
+high availability and for load balancing across different systems and hardware to set up a Docker swarm.
